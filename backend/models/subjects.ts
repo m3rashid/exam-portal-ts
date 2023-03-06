@@ -4,13 +4,14 @@ import { IUser } from './user';
 export interface ISubject {
   topic: string;
   createdBy?: ObjectId | IUser;
-  status: boolean;
+  status?: boolean;
 }
 
 export const subjectschema = new Schema<ISubject>({
   topic: {
     required: true,
     type: String,
+    minlength: 2,
   },
   createdBy: {
     type: Schema.Types.ObjectId,
@@ -19,7 +20,6 @@ export const subjectschema = new Schema<ISubject>({
   status: {
     type: Boolean,
     default: true,
-    required: true,
   },
 });
 

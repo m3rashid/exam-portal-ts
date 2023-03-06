@@ -4,10 +4,11 @@ import { ISubject } from './subjects';
 import { IUser } from './user';
 
 export interface IQuestion {
+  _id: ObjectId;
   body: string;
-  weightage?: number;
-  ansCount?: number;
-  isMcq?: boolean;
+  weightage: number;
+  ansCount: number;
+  isMcq: boolean;
   customAnswer?: string;
   options: Array<ObjectId | IOption>;
   explanation?: string;

@@ -17,23 +17,25 @@ export const userTypesList = [
 export type IUserType = typeof userTypesList[number];
 
 export interface IUser {
+  _id: ObjectId;
   name: string;
   password: string;
   emailId: string;
   contact: string;
-  avatar?: string;
   type: IUserType;
   status: boolean;
-  createdBy?: ObjectId | IUser;
+  testIds: Array<ObjectId>;
 }
 
 export const userschema = new Schema<IUser>({
   name: {
     required: true,
     type: String,
+    minlength: 3,
   },
   password: {
     required: true,
+    minlength: 5,
     type: String,
   },
   emailId: {
@@ -46,10 +48,6 @@ export const userschema = new Schema<IUser>({
     type: String,
     unique: true,
   },
-  avatar: {
-    required: false,
-    type: String,
-  },
   type: {
     required: true,
     type: String,
@@ -61,10 +59,12 @@ export const userschema = new Schema<IUser>({
     default: true,
     type: Boolean,
   },
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'UserModel',
-  },
+  testIds: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'TestPaperModel',
+    },
+  ],
 });
 
 export const UserModel = model<IUser>('UserModel', userschema);

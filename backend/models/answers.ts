@@ -3,6 +3,7 @@ import { IOption } from './options';
 import { IUser } from './user';
 
 export interface IAnswer {
+  _id: ObjectId;
   questionId: string;
   customAnswer: string;
   chosenOption: Array<ObjectId | IOption>;

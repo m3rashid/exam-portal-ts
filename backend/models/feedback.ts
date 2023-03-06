@@ -1,8 +1,9 @@
 import { Schema, model, ObjectId } from 'mongoose';
-import { ITestPaper } from './testpaper';
+import { ITestPaper } from './testPaper';
 import { IUser } from './user';
 
 export interface IFeedback {
+  _id: ObjectId;
   feedback?: string;
   rating?: number;
   userId: ObjectId | IUser;

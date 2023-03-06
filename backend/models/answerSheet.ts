@@ -1,11 +1,12 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { ITestPaper } from './testpaper';
+import { ITestPaper } from './testPaper';
 import { IUser } from './user';
 import { IQuestion } from './questions';
 import { IAnswer } from './answers';
 
 export interface IAnswerSheet {
-  startTime: number | string;
+  _id: ObjectId;
+  startTime: number;
   testId: ObjectId | ITestPaper;
   userId: ObjectId | IUser;
   questions: Array<ObjectId | IQuestion>;

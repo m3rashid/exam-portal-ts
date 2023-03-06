@@ -1,6 +1,7 @@
-import { model, Schema } from 'mongoose';
+import { model, ObjectId, Schema } from 'mongoose';
 
 export interface IOption {
+  _id: ObjectId;
   optBody?: string;
   optImg?: string;
   isAnswer: boolean;

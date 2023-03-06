@@ -2,6 +2,7 @@ import { Schema, model, ObjectId } from 'mongoose';
 import { IQuestion } from './questions';
 
 export interface ISubResult {
+  _id: ObjectId;
   qId: ObjectId | IQuestion;
   explanation?: string;
   correctAnswer: Array<string>;

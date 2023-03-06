@@ -9,8 +9,9 @@ import mongoose from 'mongoose';
 import { IError } from './utils/error';
 import passport from './utils/passport';
 import compression from 'compression';
-import { isDevelopment } from './utils/utils';
+import { createAdmin } from './services/tool';
 import expressSession from 'express-session';
+import { isDevelopment } from './utils/utils';
 import express, { NextFunction, Request, Response } from 'express';
 
 const app = express();
@@ -76,6 +77,7 @@ app.listen(port, async () => {
     );
     console.log('Mongoose is connected');
     console.log(`Server running on port ${port}`);
+    // createAdmin();
   } catch (err: any) {
     console.error('MongoDB connection error');
     console.error(err);

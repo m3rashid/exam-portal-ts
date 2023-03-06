@@ -4,6 +4,7 @@ import { ISubject } from './subjects';
 import { IUser } from './user';
 
 export interface ITestPaper {
+  _id: ObjectId;
   type: string;
   title: string;
   questions?: Array<ObjectId | IQuestion>;
