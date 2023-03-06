@@ -8,3 +8,4 @@ frontend/build
 backend/public/uploads/*
 backend/public/result/*
 todo.md
+yarn-error.log

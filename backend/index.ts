@@ -1,3 +1,4 @@
+/// <reference path="./index.d.ts" />
 import 'dotenv/config';
 import cors from 'cors';
 import path from 'path';
@@ -38,6 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+isDevelopment && mongoose.set('debug', true);
 
 // routes
 
