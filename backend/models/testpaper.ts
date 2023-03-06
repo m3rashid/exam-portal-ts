@@ -1,7 +1,7 @@
 import { Schema, model, ObjectId } from 'mongoose';
-import { IQuestion } from 'models/questions';
-import { ISubject } from 'models/subjects';
-import { IUser } from 'models/user';
+import { IQuestion } from './questions';
+import { ISubject } from './subjects';
+import { IUser } from './user';
 
 export interface ITestPaper {
   type: string;

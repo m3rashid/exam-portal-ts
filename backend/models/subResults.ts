@@ -1,5 +1,5 @@
 import { Schema, model, ObjectId } from 'mongoose';
-import { IQuestion } from 'models/questions';
+import { IQuestion } from './questions';
 
 export interface ISubResult {
   qId: ObjectId | IQuestion;

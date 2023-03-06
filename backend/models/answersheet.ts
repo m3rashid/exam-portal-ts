@@ -1,8 +1,8 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { ITestPaper } from 'models/testpaper';
-import { IUser } from 'models/user';
-import { IQuestion } from 'models/questions';
-import { IAnswer } from 'models/answers';
+import { ITestPaper } from './testpaper';
+import { IUser } from './user';
+import { IQuestion } from './questions';
+import { IAnswer } from './answers';
 
 export interface IAnswerSheet {
   startTime: number | string;

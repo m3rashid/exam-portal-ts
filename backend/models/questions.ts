@@ -1,7 +1,7 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { IOption } from 'models/options';
-import { ISubject } from 'models/subjects';
-import { IUser } from 'models/user';
+import { IOption } from './options';
+import { ISubject } from './subjects';
+import { IUser } from './user';
 
 export interface IQuestion {
   body: string;

@@ -1,5 +1,5 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { IUser } from 'models/user';
+import { IUser } from './user';
 
 export interface ISubject {
   topic: string;

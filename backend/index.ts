@@ -6,10 +6,10 @@ import helmet from 'helmet';
 import logger from 'morgan';
 import xss from 'xss-clean';
 import mongoose from 'mongoose';
-import { IError } from 'utils/error';
-import passport from 'utils/passport';
+import { IError } from './utils/error';
+import passport from './utils/passport';
 import compression from 'compression';
-import { isDevelopment } from 'utils/utils';
+import { isDevelopment } from './utils/utils';
 import expressSession from 'express-session';
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -20,6 +20,7 @@ app.use(
   expressSession({
     secret: process.env.SESSION_SECRET as string,
     resave: false,
+    saveUninitialized: true,
   })
 );
 app.use(express.json());
@@ -64,7 +65,7 @@ app.use((err: any, req: Request, res: Response, _: NextFunction) => {
 
 const port = isDevelopment
   ? process.env.PORT_DEV || 5000
-  : process.env.port || 80;
+  : process.env.PORT || 80;
 
 app.listen(port, async () => {
   try {

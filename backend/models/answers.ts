@@ -1,6 +1,6 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { IOption } from 'models/options';
-import { IUser } from 'models/user';
+import { IOption } from './options';
+import { IUser } from './user';
 
 export interface IAnswer {
   questionId: string;

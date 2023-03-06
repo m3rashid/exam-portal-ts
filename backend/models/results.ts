@@ -1,8 +1,8 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { IAnswerSheet } from 'models/answersheet';
-import { ISubResult } from 'models/subResults';
-import { ITestPaper } from 'models/testpaper';
-import { IUser } from 'models/user';
+import { IAnswerSheet } from './answersheet';
+import { ISubResult } from './subResults';
+import { ITestPaper } from './testpaper';
+import { IUser } from './user';
 
 export interface IResult {
   testId: ObjectId | ITestPaper;
