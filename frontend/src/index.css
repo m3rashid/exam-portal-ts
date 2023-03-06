@@ -1,0 +1,12 @@
+@tailwind components;
+@tailwind utilities;
+
+.all-center {
+  @apply flex justify-center items-center;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}

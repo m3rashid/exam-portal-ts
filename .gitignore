@@ -1,0 +1,10 @@
+node_modules
+.env
+
+frontend/node_modules
+backend/node_modules
+frontend/build
+.idea
+backend/public/uploads/*
+backend/public/result/*
+todo.md
