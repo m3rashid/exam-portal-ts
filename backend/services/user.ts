@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { IUser } from '../models/user';
+import { IUser } from 'types/models';
 
 export const userDetails = async (
   req: Request,

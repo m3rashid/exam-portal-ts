@@ -2,8 +2,9 @@ import bcrypt from 'bcrypt';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import { IUser, UserModel } from '../models/user';
+import { UserModel } from '../models/user';
 import { Request } from 'express';
+import { IUser } from 'types/models';
 
 passport.use(
   'login',

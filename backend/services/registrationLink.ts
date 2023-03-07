@@ -1,7 +1,7 @@
 import { TestPaperModel } from '../models/testPaper';
 import { FeedbackModel } from '../models/feedback';
 import { NextFunction, Request, Response } from 'express';
-import { IUser } from '../models/user';
+import { IUser } from 'types/models';
 import { isTeacher, notPermitted } from '../utils/utils';
 
 export const stopRegistration = async (

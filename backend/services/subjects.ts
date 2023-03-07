@@ -1,7 +1,7 @@
 //view all subjects and single subject
 import { NextFunction, Request, Response } from 'express';
-import { ISubject, SubjectModel } from '../models/subjects';
-import { IUser } from '../models/user';
+import { SubjectModel } from '../models/subjects';
+import { ISubject, IUser } from 'types/models';
 import { isAdmin, notPermitted } from '../utils/utils';
 
 export const createEditsubject = async (

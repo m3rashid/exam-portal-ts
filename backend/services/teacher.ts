@@ -1,8 +1,7 @@
-import { IQuestion, QuestionModel } from '../models/questions';
-import { IOption, OptionsModel } from '../models/options';
-import {} from './tool';
+import { QuestionModel } from '../models/questions';
+import { OptionsModel } from '../models/options';
 import { NextFunction, Request, Response } from 'express';
-import { IUser } from '../models/user';
+import { IOption, IQuestion, IUser } from 'types/models';
 import { isTeacher, notPermitted } from '../utils/utils';
 import { ObjectId } from 'mongoose';
 

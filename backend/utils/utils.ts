@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { IUserType } from '../models/user';
+import { IUserType } from 'types/models';
 
 export const isDevelopment = process.env.NODE_ENV === 'development';
 

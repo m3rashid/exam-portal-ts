@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { ObjectId } from 'mongoose';
 import { AnswersheetModel } from '../models/answerSheet';
-import { IResult, ResultModel } from '../models/results';
-import { IQuestion } from '../models/questions';
-import { IAnswer } from '../models/answers';
+import { IOption, IAnswer, IResult, IQuestion } from 'types/models';
 import { SubResultsModel } from '../models/subResults';
-import { IOption, OptionsModel } from '../models/options';
+import { OptionsModel } from '../models/options';
 import { throwError } from '../utils/error';
+import { ResultModel } from '../models/results';
 
 export const generateResults = async (
   req: Request,

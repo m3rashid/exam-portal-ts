@@ -4,7 +4,12 @@ import { IUser } from 'types/models';
 
 export interface IAuth {
   isLoggedIn: boolean;
-  user: (IUser & { userOptions: IUserOptions[] }) | null;
+  user:
+    | (IUser & {
+        userOptions: IUserOptions[];
+        currentTestId: string | null;
+      })
+    | null;
 }
 
 export const initialState: IAuth = {

@@ -118,7 +118,7 @@ const Dashboard: React.FC<IDashboardProps> = () => {
         collapsed={ui.collapsed}
         className='overflow-hidden h-[100vh] fixed left-0 z-[5]'
       >
-        <div className='logo11' />
+        <div className='w-[120px] h-[31px] bg=[rgba(255, 255, 255, 0.2)] mt-[16px] mr-[24px] mb-[16px] ml-0 float-left z-10' />
         <Menu
           defaultSelectedKeys={[this.props.user.activeRoute]}
           mode='inline'
@@ -139,17 +139,17 @@ const Dashboard: React.FC<IDashboardProps> = () => {
         <Layout.Header className='fixed w-[100vw] pl=[10px] z-[1000] bg-[#465d72]'>
           {ui.collapsed ? (
             <MenuUnfoldOutlined
-              className='trigger text-[#fff] text-[20px] p-[20px]'
+              className='leading-[64px] py-0 px-[24px] text-[#fff] text-[20px] p-[20px]'
               onClick={toggleSidebar}
             />
           ) : (
             <MenuFoldOutlined
-              className='trigger text-[#fff] text-[20px] p-[20px]'
+              className='leading-[64px] py-0 px-[24px] text-[#fff] text-[20px] p-[20px]'
               onClick={toggleSidebar}
             />
           )}
 
-          <ul className='user-options-list'>
+          <ul className='fixed top-0 right-0 flex flex-wrap justify-center items-center list-none float-left'>
             <li>
               <Tooltip placement='bottom' title='Log Out'>
                 <Button
@@ -157,7 +157,6 @@ const Dashboard: React.FC<IDashboardProps> = () => {
                   size='large'
                   shape='circle'
                   onClick={logout}
-                  className='logout-button'
                 >
                   <LogoutOutlined />
                 </Button>
@@ -165,7 +164,7 @@ const Dashboard: React.FC<IDashboardProps> = () => {
             </li>
             <li style={{ display: 'flex', alignItems: 'center' }}>
               <img
-                className='p-[5px] mt-[1px] d-logo'
+                className='p-[5px] h-[55px] mt-[-17px]'
                 src='/main.png'
                 alt='company logo'
               />
@@ -184,14 +183,4 @@ const Dashboard: React.FC<IDashboardProps> = () => {
 
 export default Dashboard;
 
-/*
-class Dashboard extends React.Component {
-    componentWillMount() {}
-}
-
-export default connect(mapStateToProps, {
-  changeActiveRoute,
-  login,
-  logout,
-})(Dashboard);
-*/
+// changeActiveRoute,

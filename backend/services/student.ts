@@ -1,10 +1,11 @@
-import { ITestPaper, TestPaperModel } from '../models/testPaper';
-import { FeedbackModel, IFeedback } from '../models/feedback';
+import { TestPaperModel } from '../models/testPaper';
+import { FeedbackModel } from '../models/feedback';
 import { QuestionModel } from '../models/questions';
-import { AnswersheetModel, IAnswerSheet } from '../models/answerSheet';
+import { AnswersheetModel } from '../models/answerSheet';
 import { AnswerModel } from '../models/answers';
 import { NextFunction, Request, Response } from 'express';
-import { IUser, UserModel } from '../models/user';
+import { ITestPaper, IUser, IAnswerSheet, IFeedback } from 'types/models';
+import { UserModel } from '../models/user';
 import { OptionsModel } from '../models/options';
 import { throwError } from '../utils/error';
 

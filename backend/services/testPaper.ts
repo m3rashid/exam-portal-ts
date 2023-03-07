@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongoose';
-import { IUser } from '../models/user';
+import { IQuestion, ITestPaper, IUser } from 'types/models';
 import { ResultModel } from '../models/results';
 import { OptionsModel } from '../models/options';
 import { SubjectModel } from '../models/subjects';
 import { isTeacher, notPermitted } from '../utils/utils';
 import { NextFunction, Request, Response } from 'express';
-import { IQuestion, QuestionModel } from '../models/questions';
-import { ITestPaper, TestPaperModel } from '../models/testPaper';
+import { QuestionModel } from '../models/questions';
+import { TestPaperModel } from '../models/testPaper';
 
 export const createEditTest = async (
   req: Request,

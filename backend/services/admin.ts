@@ -1,8 +1,9 @@
 import { hashPassword } from './tool';
 import { Request, Response, NextFunction } from 'express';
-import { IUser, UserModel, userTypes } from '../models/user';
+import { IUser, userTypes } from 'types/models';
 import { throwError } from '../utils/error';
 import { isAdmin, notPermitted } from '../utils/utils';
+import { UserModel } from '../models/user';
 
 export const teacherRegister = async (
   req: Request,
