@@ -1,11 +1,5 @@
-import { model, ObjectId, Schema } from 'mongoose';
-import { IUser } from './user';
-
-export interface ISubject {
-  topic: string;
-  createdBy?: ObjectId | IUser;
-  status?: boolean;
-}
+import { model, Schema } from 'mongoose';
+import { ISubject } from 'types/models';
 
 export const subjectschema = new Schema<ISubject>({
   topic: {

@@ -1,18 +1,5 @@
-import { model, ObjectId, Schema } from 'mongoose';
-import { ITestPaper } from './testPaper';
-import { IUser } from './user';
-import { IQuestion } from './questions';
-import { IAnswer } from './answers';
-
-export interface IAnswerSheet {
-  _id: ObjectId;
-  startTime: number;
-  testId: ObjectId | ITestPaper;
-  userId: ObjectId | IUser;
-  questions: Array<ObjectId | IQuestion>;
-  answers: Array<ObjectId | IAnswer>;
-  completed: boolean;
-}
+import { model, Schema } from 'mongoose';
+import { IAnswerSheet } from 'types/models';
 
 export const answersheetschema = new Schema<IAnswerSheet>({
   startTime: {

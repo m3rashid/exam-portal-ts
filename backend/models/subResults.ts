@@ -1,15 +1,5 @@
-import { Schema, model, ObjectId } from 'mongoose';
-import { IQuestion } from './questions';
-
-export interface ISubResult {
-  _id: ObjectId;
-  qId: ObjectId | IQuestion;
-  explanation?: string;
-  correctAnswer: Array<string>;
-  givenAnswer: Array<string>;
-  weightage: number;
-  isCorrect?: boolean;
-}
+import { Schema, model } from 'mongoose';
+import { ISubResult } from 'types/models';
 
 export const subResultsSchema = new Schema<ISubResult>({
   qId: {

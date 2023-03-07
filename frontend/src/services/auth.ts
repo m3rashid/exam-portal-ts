@@ -5,7 +5,7 @@ const authService = {
   // let token: string | null = null;
 
   retriveToken: () => {
-    localStorage.getItem('Token');
+    return localStorage.getItem('Token');
   },
 
   storeToken: (t: string) => {

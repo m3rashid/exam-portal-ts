@@ -1,29 +1,5 @@
 import { model, ObjectId, Schema } from 'mongoose';
-import { IOption } from './options';
-import { ISubject } from './subjects';
-import { IUser } from './user';
-
-export interface IQuestion {
-  _id: ObjectId;
-  body: string;
-  weightage: number;
-  ansCount: number;
-  isMcq: boolean;
-  customAnswer?: string;
-  options: Array<ObjectId | IOption>;
-  explanation?: string;
-  subject: ObjectId | ISubject;
-  quesImg?: string;
-  difficulty?: number;
-  level: string;
-  school?: string;
-  year?: string;
-  topic?: string;
-  component?: string;
-  exam?: string;
-  createdBy?: ObjectId | IUser;
-  status: boolean;
-}
+import { IQuestion } from 'types/models';
 
 export const questionschema = new Schema<IQuestion>({
   body: { required: true, type: String },

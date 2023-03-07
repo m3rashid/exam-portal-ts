@@ -1,11 +1,5 @@
-import { model, ObjectId, Schema } from 'mongoose';
-
-export interface IOption {
-  _id: ObjectId;
-  optBody?: string;
-  optImg?: string;
-  isAnswer: boolean;
-}
+import { model, Schema } from 'mongoose';
+import { IOption } from 'types/models';
 
 export const optionschema = new Schema<IOption>({
   optBody: {

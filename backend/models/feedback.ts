@@ -1,14 +1,5 @@
 import { Schema, model, ObjectId } from 'mongoose';
-import { ITestPaper } from './testPaper';
-import { IUser } from './user';
-
-export interface IFeedback {
-  _id: ObjectId;
-  feedback?: string;
-  rating?: number;
-  userId: ObjectId | IUser;
-  testId: ObjectId | ITestPaper;
-}
+import { IFeedback } from 'types/models';
 
 export const feedbackschema = new Schema<IFeedback>({
   feedback: {

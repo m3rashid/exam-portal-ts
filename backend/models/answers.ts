@@ -1,14 +1,5 @@
-import { model, ObjectId, Schema } from 'mongoose';
-import { IOption } from './options';
-import { IUser } from './user';
-
-export interface IAnswer {
-  _id: ObjectId;
-  questionId: string;
-  customAnswer: string;
-  chosenOption: Array<ObjectId | IOption>;
-  userId: ObjectId | IUser;
-}
+import { model, Schema } from 'mongoose';
+import { IAnswer } from 'types/models';
 
 export const answerSchema = new Schema<IAnswer>({
   questionId: {

@@ -1,17 +1,5 @@
-import { model, ObjectId, Schema } from 'mongoose';
-import { IAnswerSheet } from './answerSheet';
-import { ISubResult } from './subResults';
-import { ITestPaper } from './testPaper';
-import { IUser } from './user';
-
-export interface IResult {
-  _id: ObjectId;
-  testId: ObjectId | ITestPaper;
-  userId: ObjectId | IUser;
-  answerSheetId: ObjectId | IAnswerSheet;
-  result: Array<ObjectId | ISubResult>;
-  score?: number;
-}
+import { model, Schema } from 'mongoose';
+import { IResult } from 'types/models';
 
 export const resultSchema = new Schema<IResult>({
   testId: {

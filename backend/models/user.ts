@@ -1,31 +1,5 @@
-import { Schema, model, ObjectId } from 'mongoose';
-
-export const userTypes = {
-  teacher: 'TEACHER',
-  student: 'STUDENT',
-  admin: 'ADMIN',
-  other: 'OTHER',
-} as const;
-
-export const userTypesList = [
-  userTypes.teacher,
-  userTypes.student,
-  userTypes.admin,
-  userTypes.other,
-] as const;
-
-export type IUserType = typeof userTypesList[number];
-
-export interface IUser {
-  _id: ObjectId;
-  name: string;
-  password: string;
-  emailId: string;
-  contact: string;
-  type: IUserType;
-  status: boolean;
-  testIds: Array<ObjectId>;
-}
+import { Schema, model } from 'mongoose';
+import { IUser, userTypes, userTypesList } from 'types/models';
 
 export const userschema = new Schema<IUser>({
   name: {

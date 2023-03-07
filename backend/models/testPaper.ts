@@ -1,23 +1,5 @@
-import { Schema, model, ObjectId } from 'mongoose';
-import { IQuestion } from './questions';
-import { ISubject } from './subjects';
-import { IUser } from './user';
-
-export interface ITestPaper {
-  _id: ObjectId;
-  type: string;
-  title: string;
-  questions?: Array<ObjectId | IQuestion>;
-  subjects?: Array<ObjectId | ISubject>;
-  duration: number;
-  difficulty?: number;
-  testBegins: boolean;
-  status: boolean;
-  createdBy?: ObjectId | IUser;
-  isRegistrationAvailable: boolean;
-  testConducted: boolean;
-  isResultGenerated: boolean;
-}
+import { Schema, model } from 'mongoose';
+import { ITestPaper } from 'types/models';
 
 export const testschema = new Schema<ITestPaper>({
   type: {
