@@ -2,22 +2,8 @@ import React, { PropsWithChildren } from 'react';
 
 const Usercontainer: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <div
-      style={{
-        width: '100%',
-        paddingLeft: '106px',
-        paddingTop: '50px',
-        minHeight: '100vh',
-      }}
-    >
-      <div
-        style={{
-          minHeight: '100vh',
-          width: '100%',
-          background: 'rgb(205, 217, 225)',
-          padding: '20px',
-        }}
-      >
+    <div className='w-[100%] pl-[106px] pt-[50px] min-h-[100vh]'>
+      <div className='w-[100%] min-h-[100vh] bg-[rgb(205, 217, 225)] p-[20px]'>
         {children}
       </div>
     </div>

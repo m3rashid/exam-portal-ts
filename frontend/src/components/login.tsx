@@ -1,109 +1,110 @@
-import React from 'react';
-import { Form, Input, Button } from 'antd';
-// import { connect } from 'react-redux';
-// import { login, logout } from '../../../actions/loginAction';
-// import auth from '../../../services/AuthServices';
+import React, { useState } from 'react';
+import { Form, Input, Button, Typography } from 'antd';
 import Alert from 'components/common/alert';
 import { Navigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { authAtom } from 'atoms/auth';
+import { IUserType, userTypesList } from 'types/models';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import authService from 'services/auth';
+import {
+  adminPermissions,
+  otherPermissions,
+  studentPermissions,
+  teacherPermissions,
+} from 'services/userOptions';
 
 export interface ILoginProps {}
 
 const Login: React.FC<ILoginProps> = () => {
-  const changeAuthType = (selected: string) => {
-    if (selected !== 'ADMIN' && selected !== 'TRAINER') return;
+  const [auth, setAuth] = useRecoilState(authAtom);
+  const [state, setState] = useState<{ authType: IUserType }>({
+    authType: 'ADMIN',
+  });
+
+  const changeAuthType = (selected: IUserType) => {
+    if (!userTypesList.includes(selected)) return;
     setState({ authType: selected });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        auth
-          .LoginAuth(values.email, values.password, this.state.authType)
-          .then((response) => {
-            if (response.data.success) {
-              this.props.login(response.data.user);
-              auth.storeToken(response.data.token);
-              this.setState({
-                isLoggedIn: true,
-              });
-            } else {
-              return Alert(
-                'error',
-                'Error!',
-                response.data.message.replaceAll('TRAINER', 'TEACHER')
-              );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            return Alert('error', 'Error!', 'Server Error');
-          });
+  const handleSubmit = async (values: any) => {
+    try {
+      const { data } = await authService.loginAuth(
+        values.email,
+        values.password,
+        state.authType
+      );
+      if (!data.success) {
+        return Alert('error', 'Error!', data.message);
       }
-    });
+      setAuth({
+        isLoggedIn: true,
+        user: {
+          ...data.user,
+          userOptions:
+            state.authType === 'ADMIN'
+              ? adminPermissions
+              : state.authType === 'TEACHER'
+              ? teacherPermissions
+              : state.authType === 'STUDENT'
+              ? studentPermissions
+              : otherPermissions,
+        },
+      });
+    } catch (error: any) {
+      console.log(error);
+      return Alert('error', 'Error!', 'Server Error');
+    }
   };
 
-  if (this.state.isLoggedIn) {
-    return <Navigate to={this.props.user.userOptions[0].link} />;
+  if (auth.isLoggedIn) {
+    return <Navigate to={auth.user?.userOptions[0].link!!} />;
   }
 
   return (
-    <div className='login-container'>
-      <div className='login-inner'>
-        <h1>Sign In</h1>
-        <div className='register_login_switch'>
-          <span
-            onClick={() => changeAuthType('TRAINER')}
-            className={`${this.state.authType === 'TRAINER' ? 'selected' : ''}`}
+    <div className='flex flex-wrap flex-col justify-center h-[450px] w-[500px] rounded-[5px]'>
+      <div className='py-[50px] px-[30px]'>
+        <Typography.Title level={2} className='text-center font-bold'>
+          Sign In
+        </Typography.Title>
+
+        {userTypesList.map((type) => (
+          <div className='register_login_switch first:rounded-l-[8px] first:border-r-0 last:rounded-l-[8px] last:border-l-0'>
+            <span
+              onClick={() => changeAuthType(type)}
+              className={
+                state.authType === type
+                  ? 'bg-[#267693] text-white cursor-default'
+                  : ''
+              }
+            >
+              {type}
+            </span>
+          </div>
+        ))}
+
+        <Form onFinish={handleSubmit} name='login'>
+          <Form.Item
+            hasFeedback
+            rules={[
+              { type: 'email', message: 'The input is not valid E-mail!' },
+              { required: true, message: 'Please input your E-mail!' },
+            ]}
           >
-            Teacher
-          </span>
-          <span
-            onClick={() => this.changeAuthType('ADMIN')}
-            className={`${this.state.authType === 'ADMIN' ? 'selected' : ''}`}
-          >
-            Admin
-          </span>
-        </div>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Item hasFeedback>
-            {getFieldDecorator('email', {
-              rules: [
-                {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!',
-                },
-                {
-                  required: true,
-                  message: 'Please input your E-mail!',
-                },
-              ],
-            })(
-              <Input
-                prefix={
-                  <Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />
-                }
-                placeholder='Email'
-              />
-            )}
+            <Input
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder='Email'
+            />
           </Form.Item>
-          <Form.Item hasFeedback>
-            {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your Password!',
-                },
-              ],
-            })(
-              <Input
-                prefix={
-                  <Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />
-                }
-                type='password'
-                placeholder='Password'
-              />
-            )}
+          <Form.Item
+            hasFeedback
+            rules={[{ required: true, message: 'Please input your Password!' }]}
+          >
+            <Input
+              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+              type='password'
+              placeholder='Password'
+            />
           </Form.Item>
           <Form.Item>
             <Button type='primary' htmlType='submit' block>
@@ -116,36 +117,4 @@ const Login: React.FC<ILoginProps> = () => {
   );
 };
 
-/* 
-
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  
-
-  
-
-  render() {
-    const { getFieldDecorator } = this.props.form;
-     else {
-      return (
-        
-      );
-    }
-  }
-}
-
-const LoginForm = Form.create({ name: "login" })(Login);
-
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps, {
-  login,
-  logout,
-})(LoginForm);
-
-*/
+export default Login;

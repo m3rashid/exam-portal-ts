@@ -1,3 +1,4 @@
+import { IUser } from 'types/models';
 import apis from './apis';
 import { Get, Post } from './axios';
 
@@ -16,7 +17,11 @@ const authService = {
     localStorage.removeItem('Token');
   },
 
-  loginAuth: (emailId: string, password: string, type: string) => {
+  loginAuth: (
+    emailId: IUser['emailId'],
+    password: IUser['password'],
+    type: IUser['type']
+  ) => {
     return Post({
       url: apis.LOGIN,
       data: {

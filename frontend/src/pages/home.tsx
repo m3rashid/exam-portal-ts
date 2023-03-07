@@ -1,4 +1,4 @@
-import Login from 'components/basic/login/login';
+import Login from 'components/login';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import auth from 'services/auth';

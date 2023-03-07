@@ -1,6 +1,6 @@
 import React from 'react';
-import './welcome.css';
-import image from '../dashboard/mainsss.png';
+import { useRecoilValue } from 'recoil';
+import { authAtom } from 'atoms/auth';
 
 const admin_powers = [
   'Create/Update/Remove new Subjects',
@@ -22,52 +22,53 @@ const student_powers = [
   'Give Feedback to the teacher',
 ];
 
-const welcome = () => {
-  const user = {
-    //
-  };
+export interface IWelcomeProps {}
 
-  const { type, name, emailid, contact } = user.userDetails;
-  const isLoggedIn = user.isLoggedIn;
+const Welcome: React.FC<IWelcomeProps> = () => {
+  const auth = useRecoilValue(authAtom);
+  const isLoggedIn = auth.isLoggedIn;
 
-  if (!isLoggedIn) {
-    return <div className='welcome_main_container'></div>;
+  if (!isLoggedIn || !auth.user) {
+    return (
+      <div className='flex flex-wrap justify-center items-center min-h-[80vh]' />
+    );
   }
+
+  const { name, type, contact, emailId } = auth.user;
 
   const powers =
     type === 'ADMIN'
       ? admin_powers
-      : type === 'TRAINER'
+      : type === 'TEACHER'
       ? teacher_powers
-      : student_powers;
-
-  const typeToShow =
-    type === 'TRAINER' ? 'TEACHER' : type === 'ADMIN' ? 'ADMIN' : 'STUDENT';
+      : type === 'STUDENT'
+      ? student_powers
+      : [];
 
   return (
-    <div className='welcome_main_container'>
-      <div className='welcome_left'>
+    <div className='flex flex-wrap justify-center items-center min-h-[80vh]'>
+      <div className='w-[40%] p-[2rem]'>
         <h1>Name: {name}</h1>
-        <h2>Email: {emailid}</h2>
+        <h2>Email: {emailId}</h2>
         <h2>Contact: {contact}</h2>
-        <h2>Logged In As: {typeToShow}</h2>
+        <h2>Logged In As: {type}</h2>
 
         <br />
-        <div className='admin_powers'>
-          <h2>What you can do as {typeToShow}:</h2>
-          <ul>
+        <div className=''>
+          <h2>What you can do as {type}:</h2>
+          <ul className='p-l-[32px]'>
             {powers.map((power, index) => (
               <li key={index}>{power}</li>
             ))}
           </ul>
         </div>
       </div>
-      <div className='welcome_right'>
-        <img src={image} alt='img'></img>
-        <h1>Examination Portal</h1>
+      <div className='flex flex-col justify-center items-center w-[60%]'>
+        <img className='mt-[1.5rem]' src='/mainsss.png' alt='img'></img>
+        <h1 className='mt-[1.5rem] text-[2rem]'>Examination Portal</h1>
       </div>
     </div>
   );
 };
 
-export default welcome;
+export default Welcome;
