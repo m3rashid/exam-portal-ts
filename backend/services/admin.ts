@@ -1,6 +1,6 @@
 import { hashPassword } from './tool';
 import { Request, Response, NextFunction } from 'express';
-import { IUser, UserModel } from '../models/user';
+import { IUser, UserModel, userTypes } from '../models/user';
 import { throwError } from '../utils/error';
 import { isAdmin, notPermitted } from '../utils/utils';
 
@@ -76,7 +76,7 @@ export const getAllTeachers = async (
   if (!isAdmin(user.type)) return notPermitted(res);
 
   const info = await UserModel.find(
-    { type: 'TRAINER', status: 1 },
+    { type: userTypes.teacher, status: 1 },
     { password: 0, type: 0, createdBy: 0, status: 0 }
   );
   if (!info) {

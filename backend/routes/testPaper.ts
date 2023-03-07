@@ -22,7 +22,7 @@ router.post('/begin', testPaper.beginTest);
 
 router.post('/end', testPaper.endTest);
 
-router.post('/trainer/details', testPaper.TestDetails);
+router.post('/teacher/details', testPaper.TestDetails);
 
 router.post('/candidates/details', testPaper.getCandidateDetails);
 
