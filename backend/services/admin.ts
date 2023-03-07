@@ -4,7 +4,7 @@ import { IUser, UserModel } from '../models/user';
 import { throwError } from '../utils/error';
 import { isAdmin, notPermitted } from '../utils/utils';
 
-export const trainerRegister = async (
+export const teacherRegister = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -42,7 +42,6 @@ export const trainerRegister = async (
     password: hash,
     emailId: emailId,
     contact: contact,
-    createdBy: user._id,
   });
 
   const savedUser = await tempdata.save();
@@ -52,7 +51,7 @@ export const trainerRegister = async (
   });
 };
 
-export const removeTrainer = async (
+export const removeTeacher = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -68,7 +67,7 @@ export const removeTrainer = async (
   });
 };
 
-export const getAllTrainers = async (
+export const getAllTeachers = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -87,7 +86,7 @@ export const getAllTrainers = async (
   return res.json({ success: true, message: `Success`, data: info });
 };
 
-export const getSingleTrainer = async (
+export const getSingleTeacher = async (
   req: Request,
   res: Response,
   next: NextFunction

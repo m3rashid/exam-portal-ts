@@ -56,7 +56,7 @@ export const getAllSubjects = async (
   return res.json({ success: true, message: 'Success', data: subject });
 };
 
-const getSingleSubject = async (
+export const getSingleSubject = async (
   req: Request,
   res: Response,
   next: NextFunction

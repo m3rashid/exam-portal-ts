@@ -160,28 +160,26 @@ export const checkFeedback = async (
 };
 
 /**
- * @deprecated
+ * @deprecated hot to generate test Id
  */
 export const resendMail = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  var userid = req.body.id;
-  TraineeEnterModel.findById(userid, { emailid: 1, testid: 1 }).then((info) => {
-    if (info) {
-      const link = `/trainee/taketest?testid=${info.testid}&traineeid=${info._id}`;
-      res.json({
-        success: true,
-        message: `Link sent successfully!`,
-        link: link,
-      });
-    } else {
-      res.json({
-        success: false,
-        message: 'This user has not been registered.',
-      });
-    }
+  const { userId } = req.body;
+  const info = await UserModel.findById(userId, { emailId: 1, testId: 1 });
+  if (!!info) {
+    // const link = `/trainee/taketest?testid=${info.testId}&traineeid=${info._id}`;
+    return res.json({
+      success: true,
+      message: `Link sent successfully!`,
+      // link: link,
+    });
+  }
+  return res.json({
+    success: false,
+    message: 'This user has not been registered.',
   });
 };
 
@@ -338,190 +336,22 @@ export const updateAnswers = async (
   return res.json({ success: false, message: 'Time is up!' });
 };
 
-/////////////////////
-// Left to be done //
-/////////////////////
-
-export const answersheet = async (
+export const chosenOptions = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  var userid = req.body.userid;
-  var testid = req.body.testid;
-  var p1 = TraineeEnterModel.find({ _id: userid, testid: testid });
-  var p2 = TestPaperModel.find({
-    _id: testid,
-    testbegins: true,
-    testconducted: false,
+  var { testId, userId } = req.body;
+  const answerSheet = await AnswersheetModel.findOne(
+    { testId, userId },
+    { answers: 1 }
+  ).populate('answers');
+
+  return res.json({
+    success: true,
+    message: 'Chosen Options',
+    data: answerSheet,
   });
-
-  Promise.all([p1, p2])
-    .then((info) => {
-      if (info[0].length && info[1].length) {
-        AnswersheetModel.find({ userid: userid, testid: testid }).then(
-          (data) => {
-            if (data.length) {
-              res.json({
-                success: true,
-                message: 'Answer Sheet already exists!',
-                data: data,
-              });
-            } else {
-              var qus = info[1][0].questions;
-              var answer = qus.map((d, i) => {
-                return {
-                  questionid: d,
-                  chosenOption: [],
-                  userid: userid,
-                };
-              });
-              AnswersModel.insertMany(answer, (err, ans) => {
-                if (err) {
-                  console.log(err);
-                  res.status(500).json({
-                    success: false,
-                    message: 'Unable to create Answersheet!',
-                  });
-                } else {
-                  var startTime = new Date();
-                  var tempdata = AnswersheetModel({
-                    startTime: startTime,
-                    questions: qus,
-                    answers: ans,
-                    testid: testid,
-                    userid: userid,
-                  });
-                  tempdata
-                    .save()
-                    .then((Answersheet) => {
-                      res.json({
-                        success: true,
-                        message: 'Test has started!',
-                      });
-                    })
-                    .catch((error) => {
-                      res.status(500).json({
-                        success: false,
-                        message: 'Unable to fetch details',
-                      });
-                    });
-                }
-              });
-            }
-          }
-        );
-      } else {
-        res.json({
-          success: false,
-          message: 'Invalid URL',
-        });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        success: false,
-        message: 'Unable to fetch details',
-      });
-    });
-};
-
-export const flags = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  var testid = req.body.testid;
-  var traineeid = req.body.traineeid;
-  const p1 = AnswersheetModel.findOne(
-    { userid: traineeid, testid: testid },
-    { _id: 1, startTime: 1, completed: 1 }
-  );
-  const p2 = TraineeEnterModel.findOne(
-    { _id: traineeid, testid: testid },
-    { _id: 1 }
-  );
-  const p3 = TestPaperModel.findById(testid, {
-    testbegins: 1,
-    testconducted: 1,
-    duration: 1,
-  });
-  var present = new Date();
-
-  Promise.all([p1, p2, p3])
-    .then((info) => {
-      if (info[1] === null) {
-        res.json({
-          success: false,
-          message: 'Invalid URL!',
-        });
-      } else {
-        var startedWriting = false;
-        var pending = null;
-        if (info[0] !== null) {
-          startedWriting = true;
-          pending =
-            info[2].duration * 60 - (present - info[0].startTime) / 1000;
-          if (pending <= 0) {
-            AnswersheetModel.findOneAndUpdate(
-              { userid: traineeid, testid: testid },
-              { completed: true }
-            )
-              .then((result) => {
-                res.json({
-                  success: true,
-                  message: 'Successfull',
-                  data: {
-                    testbegins: info[2].testbegins,
-                    testconducted: info[2].testconducted,
-                    startedWriting: startedWriting,
-                    pending: pending,
-                    completed: true,
-                  },
-                });
-              })
-              .catch((error) => {
-                res.status(500).json({
-                  success: false,
-                  message: 'Unable to fetch details',
-                });
-              });
-          } else {
-            res.json({
-              success: true,
-              message: 'Successfull',
-              data: {
-                testbegins: info[2].testbegins,
-                testconducted: info[2].testconducted,
-                startedWriting: startedWriting,
-                pending: pending,
-                completed: info[0].completed,
-              },
-            });
-          }
-        } else {
-          res.json({
-            success: true,
-            message: 'Successfull',
-            data: {
-              testbegins: info[2].testbegins,
-              testconducted: info[2].testconducted,
-              startedWriting: startedWriting,
-              pending: pending,
-              completed: false,
-            },
-          });
-        }
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({
-        success: false,
-        message: 'Unable to fetch details',
-      });
-    });
 };
 
 export const studentDetails = async (
@@ -529,51 +359,140 @@ export const studentDetails = async (
   res: Response,
   next: NextFunction
 ) => {
-  var traineeid = req.body._id;
-  TraineeEnterModel.findById(traineeid, { name: 1, emailid: 1, contact: 1 })
-    .then((info) => {
-      if (info) {
-        res.json({
-          success: true,
-          message: 'Student details',
-          data: info,
-        });
-      } else {
-        res.json({
-          success: false,
-          message: 'This student does not exists',
-        });
-      }
-    })
-    .catch((error) => {
-      res.status(500).json({
-        success: false,
-        message: 'Unable to fetch details',
-      });
-    });
+  const { userId } = req.body;
+  const info = await UserModel.findById(userId, {
+    name: 1,
+    emailId: 1,
+    contact: 1,
+  });
+  if (info) {
+    return res.json({ success: true, message: 'Student details', data: info });
+  }
+  return res.json({ success: false, message: 'This student does not exists' });
 };
 
-export const chosenOptions = async (
+export const flags = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  var testid = req.body.testid;
-  var userid = req.body.userid;
-  AnswersheetModel.findOne({ testid: testid, userid: userid }, { answers: 1 })
-    .populate('answers')
-    .exec(function (err, answersheet) {
-      if (err) {
-        res.json({
-          success: false,
-          message: 'Answersheet does not exist',
-        });
-      } else {
-        res.json({
-          success: true,
-          message: 'Chosen Options',
-          data: answersheet,
-        });
-      }
+  const { testId, studentId } = req.body;
+
+  const p1 = AnswersheetModel.findOne(
+    { userId: studentId, testId },
+    { _id: 1, startTime: 1, completed: 1 }
+  );
+
+  const p2 = UserModel.findOne(
+    { _id: studentId, testIds: { $in: [testId] } },
+    { _id: 1 }
+  );
+
+  const p3 = TestPaperModel.findById(testId, {
+    testBegins: 1,
+    testConducted: 1,
+    duration: 1,
+  });
+
+  const present = new Date().getMilliseconds();
+  const [infoP1, infoP2, infoP3] = await Promise.all([p1, p2, p3]);
+  if (!infoP2) {
+    return res.json({ success: false, message: 'Invalid URL!' });
+  }
+  let startedWriting = false;
+  let pending: number | null = null;
+  if (!infoP3) {
+    throw throwError({ statusCode: 404, message: 'No test paper found' });
+  }
+
+  startedWriting = true;
+  pending =
+    (infoP3 as ITestPaper).duration * 60 -
+    (present - (infoP1 as IAnswerSheet).startTime) / 1000;
+
+  if (pending <= 0) {
+    const result = await AnswersheetModel.findOneAndUpdate(
+      { userid: studentId, testId },
+      { completed: true }
+    );
+
+    return res.json({
+      success: true,
+      message: 'Successfull',
+      data: {
+        testbegins: (infoP3 as ITestPaper).testBegins,
+        testconducted: (infoP3 as ITestPaper).testConducted,
+        startedWriting: startedWriting,
+        pending: pending,
+        completed: true,
+      },
     });
+  }
+
+  return res.json({
+    success: true,
+    message: 'Successfull',
+    data: {
+      testbegins: (infoP3 as ITestPaper).testBegins,
+      testconducted: (infoP3 as ITestPaper).testConducted,
+      startedWriting: startedWriting,
+      pending: pending,
+      completed: (infoP1 as IAnswerSheet).completed,
+    },
+  });
+};
+
+export const answerSheet = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId, testId } = req.body;
+  var p1 = UserModel.find({ _id: userId, testId });
+  var p2 = TestPaperModel.find({
+    _id: testId,
+    testbegins: true,
+    testconducted: false,
+  });
+
+  const [infoP1, infoP2] = await Promise.all([p1, p2]);
+  if (!infoP1.length || !infoP2.length) {
+    return res.json({
+      success: false,
+      message: 'Invalid URL',
+    });
+  }
+
+  // Promise.all([p1, p2]).then((info) => {
+  const data = await AnswersheetModel.find({ userId, testId });
+  if (data.length) {
+    return res.json({
+      success: true,
+      message: 'Answer Sheet already exists!',
+      data: data,
+    });
+  }
+
+  const qus = infoP2[0].questions;
+  const answer = qus?.map((d, i) => {
+    return {
+      questionId: d,
+      chosenOption: [],
+      userId,
+    };
+  });
+
+  const ans = await AnswerModel.insertMany(answer);
+  const startTime = new Date().getMilliseconds();
+
+  const tempdata = new AnswersheetModel<Partial<IAnswerSheet>>({
+    startTime: startTime,
+    questions: qus,
+    answers: ans,
+    testId,
+    userId,
+  });
+
+  const answersheet = await tempdata.save();
+  return res.json({ success: true, message: 'Test has started!' });
 };
