@@ -3,8 +3,6 @@ import apis from './apis';
 import { Get, Post } from './axios';
 
 const authService = {
-  // let token: string | null = null;
-
   retriveToken: () => {
     return localStorage.getItem('Token');
   },

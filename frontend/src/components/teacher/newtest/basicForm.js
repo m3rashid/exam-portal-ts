@@ -65,7 +65,6 @@ class BasicTestFormO extends Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
       <div
         className="login-container"
@@ -73,88 +72,67 @@ class BasicTestFormO extends Component {
       >
         <div className="login-inner">
           <Form onSubmit={this.handleSubmit}>
-            {/* <Form.Item label="Test Type" hasFeedback>
-              {getFieldDecorator("type", {
-                initialValue: this.props.test.newtestFormData.testType,
-                rules: [
-                  { required: true, message: "Please select a test type" },
-                ],
-              })(
-                <Select placeholder="Test Type">
-                  <Option value="pre-test">Pre Test</Option>
-                  <Option value="post-test">Post Test</Option>
-                </Select>
-              )}
-            </Form.Item> */}
             <Form.Item
               label="Test Title"
               hasFeedback
+              name="title"
+              initialValue={this.props.test.newtestFormData.testTitle}
               validateStatus={this.state.checkingName}
-            >
-              {getFieldDecorator("title", {
-                initialValue: this.props.test.newtestFormData.testTitle,
-                rules: [
-                  { required: true, message: "Please give the test title" },
-                  {
-                    min: 5,
-                    message: "Title should be atleast 5 character long",
-                  },
-                  { validator: this.validateTestName },
-                ],
-              })(<Input placeholder="Test Title" />)}
+              rules={[
+                { required: true, message: "Please give the test title" },
+                {
+                  min: 5,
+                  message: "Title should be atleast 5 character long",
+                },
+                { validator: this.validateTestName },
+              ]}
+            ><Input placeholder="Test Title" />
             </Form.Item>
-            <Form.Item label="Subjects" hasFeedback>
-              {getFieldDecorator("subjects", {
-                initialValue: this.props.test.newtestFormData.testSubject,
-                rules: [
-                  { required: true, message: "Please select a test type" },
-                ],
-              })(
-                <Select
-                  mode="multiple"
-                  placeholder="Select one or more subjects"
-                  style={{ width: "100%" }}
-                  allowClear={true}
-                  optionFilterProp="s"
-                  size="large"
-                  bordered
-                  showArrow
-                >
-                  {this.props.admin.subjectTableData.map((item) => (
-                    <Select.Option
-                      key={item._id}
-                      value={item._id}
-                      s={item.topic}
-                    >
-                      {item.topic}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
+
+            <Form.Item label="Subjects" hasFeedback name="subjects"
+              initialValue={this.props.test.newtestFormData.testSubject}
+              rules={[
+                { required: true, message: "Please select a test type" },
+              ]}>
+              <Select
+                mode="multiple"
+                placeholder="Select one or more subjects"
+                style={{ width: "100%" }}
+                allowClear={true}
+                optionFilterProp="s"
+                size="large"
+                bordered
+                showArrow
+              >
+                {this.props.admin.subjectTableData.map((item) => (
+                  <Select.Option
+                    key={item._id}
+                    value={item._id}
+                    s={item.topic}
+                  >
+                    {item.topic}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
+
             <Form.Item
               label="Test Duration ( Min. test duration-15m )"
               hasFeedback
+              name="duration"
+              initialValue={this.props.test.newtestFormData.testDuration}
+              rules={[
+                { required: true, message: "Please give test duration" },
+              ]}
             >
-              {getFieldDecorator("duration", {
-                initialValue: this.props.test.newtestFormData.testDuration,
-                rules: [
-                  { required: true, message: "Please give test duration" },
-                ],
-              })(
-                <InputNumber
-                  style={{ width: "100%" }}
-                  placeholder="Test Duration"
-                  min={15}
-                  max={180}
-                />
-              )}
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder="Test Duration"
+                min={15}
+                max={180}
+              />
             </Form.Item>
-            {/* <Form.Item label="Organisation Name" hasFeedback>
-              {getFieldDecorator("organisation", {
-                initialValue: this.props.test.newtestFormData.OrganisationName,
-              })(<Input placeholder="Organisation Name" />)}
-            </Form.Item> */}
+
             <Form.Item>
               <Button type="primary" htmlType="submit" block>
                 Next

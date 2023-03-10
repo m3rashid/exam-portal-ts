@@ -18,6 +18,8 @@ import {
   studentPermissions,
   teacherPermissions,
 } from 'services/userOptions';
+import AllTeachers from 'components/admin/allTeachers';
+import Newtest from 'components/teacher/newtest/newtest';
 
 export interface IDashboardProps {}
 
@@ -99,7 +101,7 @@ const Dashboard: React.FC<IDashboardProps> = () => {
       case 'home':
         return <Welcome />;
       case 'newTest':
-        return <NewTest />;
+        return <Newtest />;
       case 'conductTest':
         return (
           <ConductTest {...queryString.parse(this.props.location.search)} />

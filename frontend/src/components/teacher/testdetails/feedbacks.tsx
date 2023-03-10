@@ -1,33 +1,46 @@
-import React from "react";
-import { Card, Rate, Comment, Avatar } from "antd";
+import React from 'react';
+import {
+  Card,
+  // Rate,
+  // Comment,
+  // Avatar,
+} from 'antd';
 
-export default function FeedBacks(props) {
+export interface IFeedback {
+  feedbacks: Array<{
+    userId: string;
+    email: string;
+    name: string;
+  }>;
+}
+
+const Feedback: React.FC<IFeedback> = (props) => {
   return (
     <div>
       <Card>
-        <div className="download-section">
+        <div className='download-section'>
           <h3>
             <b>Feedbacks</b>
           </h3>
           <div>
             {props.feedbacks.map((d, i) => {
               return (
-                <Card key={i} style={{ marginBottom: "10px" }}>
-                  <Comment
+                <Card key={i} style={{ marginBottom: '10px' }}>
+                  {/* <Comment
                     author={`${d.userid.name} - ${d.userid.emailid}`}
                     avatar={
                       <Avatar
-                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
                         alt={d.userid.name}
                       />
                     }
                     content={
                       <span>
-                        <Rate size="small" disabled defaultValue={d.rating} />
+                        <Rate size='small' disabled defaultValue={d.rating} />
                         <p>{d.feedback}</p>
                       </span>
                     }
-                  />
+                  /> */}
                 </Card>
               );
             })}
@@ -36,4 +49,6 @@ export default function FeedBacks(props) {
       </Card>
     </div>
   );
-}
+};
+
+export default Feedback;

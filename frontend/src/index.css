@@ -1,8 +1,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
 .all-center {
   @apply flex justify-center items-center;
+}
+
+* {
+  font-family: 'Montserrat', 'Open Sans', sans-serif;
 }
 
 html,
