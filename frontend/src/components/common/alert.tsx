@@ -1,13 +1,13 @@
 import { Modal, ModalFuncProps } from 'antd';
 
 const Alert = (
-  s: ModalFuncProps['type'] = 'warning',
+  name: ModalFuncProps['type'] = 'warning',
   title: string,
   content?: string
 ) => {
-  if (s === 'success') {
+  if (name === 'success') {
     return Modal.success({ title, content });
-  } else if (s === 'error') {
+  } else if (name === 'error') {
     return Modal.error({ title, content });
   } else {
     return Modal.warning({ title, content });

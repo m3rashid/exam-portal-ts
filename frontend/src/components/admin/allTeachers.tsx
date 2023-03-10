@@ -1,10 +1,15 @@
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import {
   Button,
   Divider,
   Input,
   Modal,
   Popconfirm,
+  Spin,
   Table,
   TableColumnProps,
   Typography,
@@ -14,73 +19,67 @@ import React, { useEffect, useState } from 'react';
 import apis from 'services/apis';
 import { SecurePost } from 'services/axios';
 import Highlighter from 'react-highlight-words';
-// import {
-//   Table,
-//   Input,
-//   Button,
-//   Icon,
-//   Typography,
-//   Divider,
-//   Modal,
-//   Popconfirm,
-// } from 'antd';
-// import { connect } from 'react-redux';
-// import {
-//   ChangeTrainerSearchText,
-//   ChangeTrainerTableData,
-//   ChangeTrainerModalState,
-// } from '../../../actions/adminAction';
-// import './alltrainer.css';
-// import Alert from '../../../components/common/alert';
-// import { SecurePost } from '../../../services/axiosCall';
-// import apis from '../../../services/Apis';
-// import NewTrainerForm from '../newTrainer/newtrainer';
+import { useRecoilState } from 'recoil';
+import { IModalName, uiAtom } from 'atoms/ui';
+import { colors } from 'components/common/constants';
+import { teacherAtom } from 'atoms/teacher';
+import NewTeacherForm from './newTeacher';
 
 export interface IAllTeachers {}
 
 const AllTeachers: React.FC<IAllTeachers> = (props) => {
-  const [state, setState] = useState({ loading: false });
+  const [ui, setUi] = useRecoilState(uiAtom);
+  const [loading, setLoading] = useState(false);
+  const [teacher, setTeacher] = useRecoilState(teacherAtom);
 
-  const openModal = (id, mode) => {
-    props.ChangeTrainerModalState(true, id, mode);
+  const openModal = (id: string, mode: IModalName) => {
+    setUi((prev) => ({ ...prev, modal: { name: mode, data: id, open: true } }));
   };
 
   const closeModal = () => {
-    props.ChangeTrainerModalState(false, null, 'Register');
+    setUi((prev) => ({
+      ...prev,
+      modal: { data: null, name: 'REGISTER', open: false },
+    }));
   };
 
   useEffect(() => {
-    props.ChangeTrainerTableData();
+    // TODO: reload teacher table data
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const deleteTrainer = (id) => {
-    SecurePost({
-      url: `${apis.DELETE_TEACHER}`,
-      data: {
-        _id: id,
-      },
-    })
-      .then((response) => {
-        if (response.data.success) {
-          Alert('success', 'Success', response.data.message);
-          props.ChangeTrainerTableData();
-        } else {
-          return Alert('warning', 'Warning!', response.data.message);
-        }
-      })
-      .catch((error) => {
-        return Alert('error', 'Error!', 'Server Error');
+  const deleteTeacher = async (id: string) => {
+    try {
+      setLoading(true);
+      const { data } = await SecurePost({
+        url: `${apis.DELETE_TEACHER}`,
+        data: { _id: id },
       });
+
+      if (data.success) {
+        Alert('success', 'Success', data.message);
+        // TODO: reload teachers table data
+      } else {
+        return Alert('warning', 'Warning!', data.message);
+      }
+    } catch (err: any) {
+      return Alert('error', 'Error!', err.messsge || 'Server Error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSearch = (selectedKeys, confirm) => {
+  const handleSearch = (
+    selectedKeys: Array<React.Key>,
+    confirm: (params?: any) => void
+  ) => {
     confirm();
-    props.ChangeTrainerSearchText(selectedKeys[0]);
+    setTeacher((prev) => ({ ...prev, searchText: selectedKeys[0].toString() }));
   };
 
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    props.ChangeTrainerSearchText('');
+  const handleReset = (clearFilters?: () => void) => {
+    if (clearFilters) clearFilters();
+    setTeacher((prev) => ({ ...prev, searchText: '' }));
   };
 
   const getColumnSearchProps = (dataIndex: string): TableColumnProps<any> => ({
@@ -92,20 +91,17 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={(node) => {
-            this.searchInput = node;
-          }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
           type='primary'
-          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          onClick={() => handleSearch(selectedKeys, confirm)}
           icon='search'
           size='small'
           style={{ width: 90, marginRight: 8 }}
@@ -121,20 +117,22 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
         </Button>
       </div>
     ),
+
     filterIcon: (filtered) => (
       <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: (visible) => {
-      if (visible) {
-        setTimeout(() => this.searchInput.select());
-      }
+
+    onFilter: (value, record) => {
+      const isValid = record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase());
+      return !!isValid;
     },
     render: (text) => (
       <Highlighter
         highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-        searchWords={[props.admin.TrainersearchText]}
+        searchWords={[teacher.searchText]}
         autoEscape
         textToHighlight={text.toString()}
       />
@@ -166,28 +164,36 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
       title: 'Action',
       key: '_id',
       dataIndex: '_id',
-      render: (key) => (
-        <span>
-          <Button
-            type='primary'
-            shape='circle'
-            icon='edit'
-            onClick={() => openModal(key, 'Save Changes')}
-          />
-          <Divider type='vertical' />
-          <Popconfirm
-            title='Are you sure？'
-            cancelText='No'
-            okText='Yes'
-            onConfirm={() => {
-              deleteTrainer(key);
-            }}
-            icon={<DeleteOutlined style={{ color: 'red' }} />}
-          >
-            <Button type='danger' shape='circle' icon='delete' />
-          </Popconfirm>
-        </span>
-      ),
+      render: (key) => {
+        if (loading) return <Spin />;
+        return (
+          <>
+            <Button
+              type='primary'
+              shape='circle'
+              icon={<EditOutlined />}
+              onClick={() => openModal(key, 'SAVE_CHANGES')}
+            />
+            <Divider type='vertical' />
+            <Popconfirm
+              title='Are you sure ?'
+              cancelText='No'
+              okText='Yes'
+              onConfirm={() => {
+                deleteTeacher(key);
+              }}
+              icon={<DeleteOutlined style={{ color: 'red' }} />}
+            >
+              <Button
+                type='primary'
+                style={{ background: colors.danger }}
+                shape='circle'
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
+          </>
+        );
+      },
     },
   ];
 
@@ -197,7 +203,13 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
         type='primary'
         icon='user-add'
         style={{ marginBottom: '10px' }}
-        onClick={() => openModal(null, 'Register')}
+        onClick={() =>
+          // openModal(null, 'Register')
+          setUi((prev) => ({
+            ...prev,
+            modal: { data: null, name: 'REGISTER', open: true },
+          }))
+        }
       >
         Add New Teacher
       </Button>
@@ -212,42 +224,28 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
       <Table
         bordered={true}
         columns={columns}
-        dataSource={props.admin.trainerTableData}
+        dataSource={teacher.tableData}
         size='middle'
         pagination={{ pageSize: 10 }}
-        loading={props.admin.trainerTableLoadingStatus}
+        loading={teacher.tableLoadingStatus}
         rowKey='_id'
         style={{ backgroundColor: '#fff', padding: '10px' }}
       />
       ;
       <Modal
-        open={props.admin.TrainermodalOpened}
+        open={ui.modal.open && ui.modal.name === 'REGISTER'}
         title={false}
-        onOk={handleOk}
+        // onOk={handleOk}
         onCancel={closeModal}
-        style={{
-          top: '20px',
-          padding: '0px',
-          backgroundColor: 'rgb(155,175,190)',
-        }}
+        className='bg-[rgb(155,175,190)] top-[20px] p-0'
         width='40%'
         destroyOnClose={true}
         footer={[]}
       >
-        <NewTrainerForm />
+        <NewTeacherForm />
       </Modal>
     </div>
   );
 };
 
 export default AllTeachers;
-
-// const mapStateToProps = (state) => ({
-//   admin: state.admin,
-// });
-
-// export default connect(mapStateToProps, {
-//   ChangeTrainerSearchText,
-//   ChangeTrainerTableData,
-//   ChangeTrainerModalState,
-// })(AllTrainer);

@@ -20,6 +20,11 @@ import {
 } from 'services/userOptions';
 import AllTeachers from 'components/admin/allTeachers';
 import Newtest from 'components/teacher/newtest/newtest';
+import queryString from 'query-string';
+import Conducttest from 'components/teacher/conducttest/conducttest';
+import ErrorPage from './error';
+import AllQuestions from 'components/teacher/allquestion';
+import AllSubjects from 'components/admin/allSubjects';
 
 export interface IDashboardProps {}
 
@@ -93,7 +98,7 @@ const Dashboard: React.FC<IDashboardProps> = () => {
       case 'listTeachers':
         return <AllTeachers />;
       case 'listSubjects':
-        return <AllTopics />;
+        return <AllSubjects />;
       case 'listQuestions':
         return <AllQuestions />;
       case 'listTests':
@@ -104,7 +109,7 @@ const Dashboard: React.FC<IDashboardProps> = () => {
         return <Newtest />;
       case 'conductTest':
         return (
-          <ConductTest {...queryString.parse(this.props.location.search)} />
+          <Conducttest {...queryString.parse(this.props.location.search)} />
         );
       default:
         return <ErrorPage />;

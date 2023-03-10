@@ -14,14 +14,17 @@ interface IState {
   loading: boolean;
 }
 
+const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
+
+const initialState: IState = {
+  star: 0,
+  comment: '',
+  loading: false,
+};
+
 const Feedback: React.FC<IFeedbackProps> = () => {
   const { user } = useRecoilValue(authAtom);
-  const initialState: IState = {
-    star: 0,
-    comment: '',
-    loading: false,
-  };
-  const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
+
   const [state, setState] = useState<IState>(initialState);
 
   const handleStarChange = (star: number) => {

@@ -1,6 +1,5 @@
 import { Steps, Typography } from 'antd';
 import React, { useEffect } from 'react';
-import { steps } from 'utils/steps';
 // import { changeStep } from "../../../actions/testAction";
 // import BasicTestForm from "./basicForm";
 // import SelectQuestion from "./selectQuestion";
@@ -15,6 +14,12 @@ const NewTest: React.FC<INewTest> = (props) => {
   useEffect(() => {
     this.props.ChangeSubjectTableData();
   }, []);
+
+  const steps = [
+    { title: 'Basic details' },
+    { title: 'Select Questions' },
+    { title: 'Finalize' },
+  ];
 
   return (
     <div>

@@ -1,71 +1,45 @@
 import { Button, Form, Input, Select } from 'antd';
+import { adminAtom } from 'atoms/admin';
+import { uiAtom } from 'atoms/ui';
 import Alert from 'components/common/alert';
 import React from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import apis from 'services/apis';
 import { SecurePost } from 'services/axios';
-// import "./newtrainer.css";
-// import { Form, Input, Button, Select } from "antd";
-// import { SecurePost } from "../../../services/axiosCall";
-// import apis from "../../../services/Apis";
-// import { connect } from "react-redux";
-// import {
-//   ChangeTrainerConfirmDirty,
-//   ChangeTrainerModalState,
-//   ChangeTrainerTableData,
-// } from "../../../actions/adminAction";
-// import Alert from "../../../components/common/alert";
-// const { Option } = Select;
 
-export interface INewTrainer {}
+export interface INewTeacher {}
 
-const NewTrainer: React.FC<INewTrainer> = (props) => {
-  const [form] = Form.useForm();
+const NewTeacher: React.FC<INewTeacher> = (props) => {
+  const setUi = useSetRecoilState(uiAtom);
+  const admin = useRecoilValue(adminAtom);
 
-  const compareToFirstPassword = (rule, value, callback) => {
-    if (value && value !== form.getFieldValue('password')) {
-      callback('passwords are not same !');
-    } else {
-      callback();
-    }
-  };
+  const handleSubmit = async (values: any) => {
+    try {
+      const { data } = await SecurePost({
+        url: `${apis.CREATE_TEACHER}`,
+        data: {
+          _id: admin.teacher?._id,
+          name: values.name,
+          password: values.password,
+          emailid: values.emailid,
+          contact: values.prefix + values.contact,
+        },
+      });
 
-  const validateToNextPassword = (rule, value, callback) => {
-    if (value && props.admin.TrainerconfirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        SecurePost({
-          url: `${apis.CREATE_TEACHER}`,
-          data: {
-            _id: props.admin.trainerId,
-            name: values.name,
-            password: values.password,
-            emailid: values.emailid,
-            contact: values.prefix + values.contact,
-          },
-        })
-          .then((response) => {
-            if (response.data.success) {
-              props.ChangeTrainerModalState(false, null, 'Register');
-              Alert('success', 'Success', response.data.message);
-              props.ChangeTrainerTableData();
-            } else {
-              props.ChangeTrainerModalState(false, null, 'Register');
-              return Alert('warning', 'Warning!', response.data.message);
-            }
-          })
-          .catch((error) => {
-            props.ChangeTrainerModalState(false, null, 'Register');
-            return Alert('error', 'Error!', 'Server Error');
-          });
+      if (data.success) {
+        Alert('success', 'Success', data.message);
+        // TODO: get all Teachers here
+      } else {
+        return Alert('warning', 'Warning!', data.message);
       }
-    });
+    } catch (err: any) {
+      return Alert('error', 'Error!', err.message || 'Server Error');
+    } finally {
+      setUi((prev) => ({
+        ...prev,
+        modal: { data: null, name: 'REGISTER', open: false },
+      }));
+    }
   };
 
   return (
@@ -73,7 +47,7 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
       <div className='w-[100%]'>
         <Form onFinish={handleSubmit} name='register'>
           <Form.Item
-            initialValue={props.admin.trainerdetails.name}
+            initialValue={admin.teacher?.name}
             name='name'
             label='Name'
             hasFeedback
@@ -89,13 +63,13 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
             <Input />
           </Form.Item>
 
-          {!props.admin.trainerId ? (
+          {!admin.teacher?._id ? (
             <Form.Item
               label='E-mail'
               hasFeedback
               className='w-[90%] ml-[5%]'
               name='emailId'
-              initialValue={props.admin.trainerdetails.emailid}
+              initialValue={admin.teacher?.email}
               rules={[
                 { type: 'email', message: 'The input is not valid E-mail!' },
                 { required: true, message: 'Please input your E-mail!' },
@@ -107,7 +81,7 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
 
           <Form.Item
             name='contact'
-            initialValue={props.admin.trainerdetails.contact}
+            initialValue={admin.teacher?.contact}
             label='Phone Number'
             className='w-[90%] ml-[5%]'
             rules={[
@@ -116,14 +90,16 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
             ]}
           >
             <Input
+              min={8}
+              max={8}
               addonBefore={
                 <Form.Item
                   name='prefix'
-                  initialValue={props.admin.trainerdetails.prefix || '+65'}
+                  initialValue={admin.teacher?.prefix || '+65'}
                   rules={[
                     {
                       required: true,
-                      message: 'Please enter contact no prefix',
+                      message: 'Please enter contact number prefix',
                     },
                   ]}
                 >
@@ -132,22 +108,18 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
                   </Select>
                 </Form.Item>
               }
-              min={8}
-              max={8}
             />
           </Form.Item>
 
-          {!props.admin.trainerId ? (
+          {!admin.teacher?._id ? (
             <div>
               <Form.Item
                 label='Password'
                 hasFeedback
                 className='w-[90%] ml-[5%]'
                 name='password'
-                initialValue={props.admin.trainerdetails.password}
                 rules={[
                   { required: true, message: 'Please input your password!' },
-                  { validator: validateToNextPassword },
                 ]}
               >
                 <Input.Password />
@@ -158,19 +130,17 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
                 hasFeedback
                 className='w-[90%] ml-[5%]'
                 name='confirm'
-                initialValue={props.admin.trainerdetails.confirmpassword}
                 rules={[
                   { required: true, message: 'Please confirm your password!' },
-                  { validator: compareToFirstPassword },
                 ]}
               >
-                <Input.Password onBlur={handleConfirmBlur} />
+                <Input.Password />
               </Form.Item>
             </div>
           ) : null}
           <Form.Item>
             <Button type='primary' htmlType='submit' block>
-              {props.admin.Trainermode}
+              {admin.teacher?.mode} Teacher
             </Button>
           </Form.Item>
         </Form>
@@ -179,18 +149,4 @@ const NewTrainer: React.FC<INewTrainer> = (props) => {
   );
 };
 
-export default NewTrainer;
-
-/*
-class NewTrainer extends Component {}
-
-const mapStateToProps = (state) => ({
-  admin: state.admin,
-});
-
-export default connect(mapStateToProps, {
-  ChangeTrainerConfirmDirty,
-  ChangeTrainerModalState,
-  ChangeTrainerTableData,
-})(NewTrainerForm);
-*/
+export default NewTeacher;

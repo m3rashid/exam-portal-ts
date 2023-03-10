@@ -52,7 +52,7 @@ const Mark: React.FC<IMarkProps> = (props) => {
           count={<FlagFilled style={{ color: '#f5222d' }} />}
         >
           <Button
-            onClick={() => props.switchQuestion(props.no)}
+            onClick={() => switchQuestion(props.no)}
             style={{ background: '#0B6623', color: '#fff' }}
           >
             {props.no + 1}
@@ -66,7 +66,7 @@ const Mark: React.FC<IMarkProps> = (props) => {
           count={<FlagFilled style={{ color: '#f5222d' }} />}
         >
           <Button
-            onClick={() => props.switchQuestion(props.no)}
+            onClick={() => switchQuestion(props.no)}
             style={{ background: '#999999', color: '#fff' }}
           >
             {props.no + 1}
@@ -78,7 +78,7 @@ const Mark: React.FC<IMarkProps> = (props) => {
     if (props.ans) {
       return (
         <Button
-          onClick={() => props.switchQuestion(props.no)}
+          onClick={() => switchQuestion(props.no)}
           className='qb'
           style={{ background: '#0B6623', color: '#fff' }}
         >
@@ -88,7 +88,7 @@ const Mark: React.FC<IMarkProps> = (props) => {
     } else {
       return (
         <Button
-          onClick={() => props.switchQuestion(props.no)}
+          onClick={() => switchQuestion(props.no)}
           className='qb'
           style={{ background: '#999999', color: '#fff' }}
         >

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
-// import { connect } from 'react-redux';
-// import { ProceedtoTest, fetchTestdata } from '../../../actions/traineeAction';
 // import './portal.css';
 
 export interface IInstruction {}
