@@ -4,7 +4,7 @@ import { Table, Card, TableColumnProps } from 'antd';
 export interface ITraineeProps {
   maxmMarks: number;
   id: string;
-  stats: any
+  stats: any;
 }
 
 const Student: React.FC<ITraineeProps> = (props) => {

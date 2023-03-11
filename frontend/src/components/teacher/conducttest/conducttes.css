@@ -6,12 +6,7 @@
   margin-left: 35%;
   padding: 50px;
   border-radius: 5px;
-  background: linear-gradient(
-    to right,
-    rgb(183, 233, 247),
-    rgb(219, 243, 250),
-    rgb(245, 252, 255)
-  );
+  background: ;
   text-align: center;
 }
 .candidate-list-header-container {

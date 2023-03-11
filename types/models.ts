@@ -1,15 +1,21 @@
 import { ObjectId } from 'mongoose';
 
-export interface IAnswer {
+export type IdType = ObjectId;
+
+export interface BaseModel {
   _id: ObjectId;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface IAnswer extends BaseModel {
   questionId: string;
   customAnswer: string;
   chosenOption: Array<ObjectId | IOption>;
   userId: ObjectId | IUser;
 }
 
-export interface IAnswerSheet {
-  _id: ObjectId;
+export interface IAnswerSheet extends BaseModel {
   startTime: number;
   testId: ObjectId | ITestPaper;
   userId: ObjectId | IUser;
@@ -18,23 +24,20 @@ export interface IAnswerSheet {
   completed: boolean;
 }
 
-export interface IFeedback {
-  _id: ObjectId;
+export interface IFeedback extends BaseModel {
   feedback?: string;
   rating?: number;
   userId: ObjectId | IUser;
   testId: ObjectId | ITestPaper;
 }
 
-export interface IOption {
-  _id: ObjectId;
+export interface IOption extends BaseModel {
   optBody?: string;
   optImg?: string;
   isAnswer: boolean;
 }
 
-export interface IQuestion {
-  _id: ObjectId;
+export interface IQuestion extends BaseModel {
   body: string;
   weightage: number;
   ansCount: number;
@@ -55,8 +58,7 @@ export interface IQuestion {
   status: boolean;
 }
 
-export interface IResult {
-  _id: ObjectId;
+export interface IResult extends BaseModel {
   testId: ObjectId | ITestPaper;
   userId: ObjectId | IUser;
   answerSheetId: ObjectId | IAnswerSheet;
@@ -64,14 +66,13 @@ export interface IResult {
   score?: number;
 }
 
-export interface ISubject {
+export interface ISubject extends BaseModel {
   topic: string;
   createdBy?: ObjectId | IUser;
   status?: boolean;
 }
 
-export interface ISubResult {
-  _id: ObjectId;
+export interface ISubResult extends BaseModel {
   qId: ObjectId | IQuestion;
   explanation?: string;
   correctAnswer: Array<string>;
@@ -80,8 +81,7 @@ export interface ISubResult {
   isCorrect?: boolean;
 }
 
-export interface ITestPaper {
-  _id: ObjectId;
+export interface ITestPaper extends BaseModel {
   type: string;
   title: string;
   questions?: Array<ObjectId | IQuestion>;
@@ -112,8 +112,7 @@ export const userTypesList = [
 
 export type IUserType = typeof userTypesList[number];
 
-export interface IUser {
-  _id: ObjectId;
+export interface IUser extends BaseModel {
   name: string;
   password: string;
   emailId: string;

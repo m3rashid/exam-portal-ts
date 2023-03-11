@@ -11,31 +11,50 @@ import {
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-// import { connect } from "react-redux";
-// import {
-//   ChangeTestSearchText,
-//   ChangeTestTableData,
-//   ChangeTestDetailsModalState,
-// } from "../../../actions/trainerAction";
-// import "./alltest.css";
-// import moment from "moment";
-
-// import TestDetails from "../testdetails/testdetails";
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { closeModalProps, uiAtom } from 'atoms/ui';
+import { studentAtom } from 'atoms/student';
+import { ISubject, IUser, IdType } from 'types/models';
+import { teacherAtom } from 'atoms/teacher';
+import TestDetails from './testdetails/testdetails';
 
 export interface IAllTests {}
 
 const AllTests: React.FC<IAllTests> = () => {
+  const [ui, setUi] = useRecoilState(uiAtom);
+  const [student, setStudent] = useRecoilState(studentAtom);
+  const teacher = useRecoilValue(teacherAtom);
+
   const openModal = (data: string | any) => {
-    props.ChangeTestDetailsModalState(true, data);
+    setUi((prev) => ({
+      ...prev,
+      modal: { data, open: true, type: 'TEST_DETAIL', name: 'Test Details' },
+    }));
   };
 
   const closeModal = () => {
-    props.ChangeTestDetailsModalState(false, null);
+    setUi((prev) => ({ ...prev, modal: closeModalProps }));
   };
 
   useEffect(() => {
-    props.ChangeTestTableData();
+    // TODO: fetch all tests table data
   }, []);
+
+  const handleSearch = (
+    selectedKeys: Array<React.Key>,
+    confirm: (params?: any) => void
+  ) => {
+    confirm();
+    setStudent((prev) => ({
+      ...prev,
+      searchText: selectedKeys[0].toString(),
+    }));
+  };
+
+  const handleReset = (clearFilters?: () => void) => {
+    if (clearFilters) clearFilters();
+    setStudent((prev) => ({ ...prev, searchText: '' }));
+  };
 
   const getColumnSearchProps = (dataIndex: string): TableColumnProps<any> => ({
     filterDropdown: ({
@@ -46,9 +65,6 @@ const AllTests: React.FC<IAllTests> = () => {
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={(node) => {
-            searchInput = node;
-          }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) =>
@@ -84,30 +100,15 @@ const AllTests: React.FC<IAllTests> = () => {
         .toLowerCase()
         .includes((value as string).toLowerCase()),
 
-    onFilterDropdownVisibleChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.select());
-      }
-    },
     render: (text) => (
       <Highlighter
         highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-        searchWords={[props.trainer.TestsearchText]}
+        searchWords={[student.searchText]}
         autoEscape
         textToHighlight={text.toString()}
       />
     ),
   });
-
-  const handleSearch = (selectedKeys, confirm) => {
-    confirm();
-    props.ChangeTestSearchText(selectedKeys[0]);
-  };
-
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    props.ChangeTestSearchText('');
-  };
 
   const columns = [
     {
@@ -120,12 +121,11 @@ const AllTests: React.FC<IAllTests> = () => {
       title: 'Subjects',
       dataIndex: 'subjects',
       key: 'subjects._id',
-      render: (tags) => (
+      render: (tags: Array<ISubject>) => (
         <span>
           {tags.map((tag, i) => {
-            let color = 'geekblue';
             return (
-              <Tag color={color} key={tag._id}>
+              <Tag color='geekblue' key={tag._id as any}>
                 {tag.topic.toUpperCase()}
               </Tag>
             );
@@ -139,17 +139,19 @@ const AllTests: React.FC<IAllTests> = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       ...getColumnSearchProps('createdAt'),
-      render: (tags) => <span>{dayjs(tags).format('DD/ MM/YYYY')}</span>,
+      render: (tags: string) => (
+        <span>{dayjs(tags).format('DD/ MM/YYYY')}</span>
+      ),
     },
     {
       title: 'Created By',
       dataIndex: 'createdBy',
       key: 'createdBy',
-      render: (text) => {
+      render: (text: IUser) => {
         return (
           <>
             <div>{text.name}</div>
-            <div>{text.emailid}</div>
+            <div>{text.emailId}</div>
           </>
         );
       },
@@ -158,7 +160,7 @@ const AllTests: React.FC<IAllTests> = () => {
       title: 'Ended',
       dataIndex: 'testconducted',
       key: 'testconducted',
-      render: (dead) => {
+      render: (dead: boolean) => {
         return dead ? 'Yes' : 'No';
       },
     },
@@ -166,7 +168,7 @@ const AllTests: React.FC<IAllTests> = () => {
       title: 'Action',
       key: '_id',
       dataIndex: '_id',
-      render: (key) => (
+      render: (key: IdType) => (
         <span>
           <Button
             type='primary'
@@ -189,24 +191,19 @@ const AllTests: React.FC<IAllTests> = () => {
       <Table
         bordered={true}
         columns={columns}
-        dataSource={props.trainer.TestTableData}
-        size='medium'
+        dataSource={teacher.testTableData}
+        size='middle'
         pagination={{ pageSize: 10 }}
-        loading={props.trainer.TestTableLoading}
+        loading={teacher.tableLoadingStatus}
         rowKey='_id'
         style={{ backgroundColor: '#fff', padding: '10px' }}
       />
       <Modal
-        open={props.trainer.TestDetailsmodalOpened}
+        open={ui.modal.open && ui.modal.type === 'TEST_DETAIL'}
         title='Test details'
-        onOk={handleOk}
         onCancel={closeModal}
         afterClose={closeModal}
-        style={{
-          top: '20px',
-          padding: '0px',
-          backgroundColor: 'rgb(155,175,190)',
-        }}
+        className='top-[20px] p-0 bg-[rgb(155,175,190)]'
         width='80%'
         bodyStyle={{ maxHeight: '80vh', overflow: 'auto' }}
         destroyOnClose={true}
@@ -218,14 +215,4 @@ const AllTests: React.FC<IAllTests> = () => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    trainer: state.trainer,
-  };
-};
-
-export default connect(mapStateToProps, {
-  ChangeTestSearchText,
-  ChangeTestTableData,
-  ChangeTestDetailsModalState,
-})(AllTests);
+export default AllTests;
