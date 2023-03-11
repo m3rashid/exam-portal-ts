@@ -20,10 +20,11 @@ import apis from 'services/apis';
 import { SecurePost } from 'services/axios';
 import Highlighter from 'react-highlight-words';
 import { useRecoilState } from 'recoil';
-import { IModalName, uiAtom } from 'atoms/ui';
+import { closeModalProps, uiAtom } from 'atoms/ui';
 import { colors } from 'components/common/constants';
 import { teacherAtom } from 'atoms/teacher';
 import NewTeacherForm from './newTeacher';
+import { IUserType } from 'types/models';
 
 export interface IAllTeachers {}
 
@@ -32,15 +33,12 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
   const [loading, setLoading] = useState(false);
   const [teacher, setTeacher] = useRecoilState(teacherAtom);
 
-  const openModal = (id: string, mode: IModalName) => {
-    setUi((prev) => ({ ...prev, modal: { name: mode, data: id, open: true } }));
+  const openModal = (data: string | null, name: string, type: IUserType) => {
+    setUi((prev) => ({ ...prev, modal: { name, data, open: true, type } }));
   };
 
   const closeModal = () => {
-    setUi((prev) => ({
-      ...prev,
-      modal: { data: null, name: 'REGISTER', open: false },
-    }));
+    setUi((prev) => ({ ...prev, modal: closeModalProps }));
   };
 
   useEffect(() => {
@@ -172,7 +170,7 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
               type='primary'
               shape='circle'
               icon={<EditOutlined />}
-              onClick={() => openModal(key, 'SAVE_CHANGES')}
+              onClick={() => openModal(key, 'SAVE_CHANGES', 'ADMIN')}
             />
             <Divider type='vertical' />
             <Popconfirm
@@ -203,13 +201,7 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
         type='primary'
         icon='user-add'
         style={{ marginBottom: '10px' }}
-        onClick={() =>
-          // openModal(null, 'Register')
-          setUi((prev) => ({
-            ...prev,
-            modal: { data: null, name: 'REGISTER', open: true },
-          }))
-        }
+        onClick={() => openModal(null, 'REGISTER', 'ADMIN')}
       >
         Add New Teacher
       </Button>
@@ -235,7 +227,6 @@ const AllTeachers: React.FC<IAllTeachers> = (props) => {
       <Modal
         open={ui.modal.open && ui.modal.name === 'REGISTER'}
         title={false}
-        // onOk={handleOk}
         onCancel={closeModal}
         className='bg-[rgb(155,175,190)] top-[20px] p-0'
         width='40%'

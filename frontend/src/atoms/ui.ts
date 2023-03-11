@@ -1,20 +1,13 @@
 import { atom } from 'recoil';
-
-export const modalNames = [
-  'REGISTER',
-  'SAVE_CHANGES',
-  'ADD_SUBJECT',
-  'NEW_SUBJECT',
-] as const;
-
-export type IModalName = typeof modalNames[number];
+import { IUserType } from 'types/models';
 
 export interface IUi {
   collapsed: boolean;
   modal: {
-    name: IModalName | null;
+    name: string;
     open: boolean;
     data: unknown | null;
+    type: IUserType | 'TEST_DETAIL';
   };
 }
 
@@ -23,9 +16,12 @@ export const initialState: IUi = {
   modal: {
     data: null,
     open: false,
-    name: null,
+    name: '',
+    type: 'OTHER',
   },
 };
+
+export const closeModalProps = { ...initialState.modal };
 
 export const uiAtom = atom<IUi>({
   key: 'ui',

@@ -8,10 +8,11 @@ import {
   Typography,
 } from 'antd';
 import { subjectAtom } from 'atoms/subject';
-import { IModalName, uiAtom } from 'atoms/ui';
+import { closeModalProps, uiAtom } from 'atoms/ui';
 import React, { useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { useRecoilState } from 'recoil';
+import { IUserType } from 'types/models';
 import NewSubjectForm from './newSubject';
 
 export interface IAllSubjects {}
@@ -20,15 +21,12 @@ const AllSubjects: React.FC<IAllSubjects> = () => {
   const [ui, setUi] = useRecoilState(uiAtom);
   const [subject, setSubject] = useRecoilState(subjectAtom);
 
-  const openModal = (id: string | null, mode: IModalName) => {
-    setUi((prev) => ({ ...prev, modal: { data: id, name: mode, open: true } }));
+  const openModal = (id: string | null, name: string, type: IUserType) => {
+    setUi((prev) => ({ ...prev, modal: { data: id, name, open: true, type } }));
   };
 
   const closeModal = () => {
-    setUi((prev) => ({
-      ...prev,
-      modal: { data: null, name: null, open: false },
-    }));
+    setUi((prev) => ({ ...prev, modal: closeModalProps }));
   };
 
   useEffect(() => {
@@ -121,7 +119,7 @@ const AllSubjects: React.FC<IAllSubjects> = () => {
             type='primary'
             shape='circle'
             icon='edit'
-            onClick={() => openModal(key, 'SAVE_CHANGES')}
+            onClick={() => openModal(key, 'SAVE_CHANGES', 'ADMIN')}
           />
         </span>
       ),
@@ -134,7 +132,7 @@ const AllSubjects: React.FC<IAllSubjects> = () => {
         type='primary'
         icon='file-text'
         style={{ marginBottom: '10px' }}
-        onClick={() => openModal(null, 'ADD_SUBJECT')}
+        onClick={() => openModal(null, 'ADD_SUBJECT', 'ADMIN')}
       >
         Add New Subject
       </Button>
@@ -157,7 +155,7 @@ const AllSubjects: React.FC<IAllSubjects> = () => {
         style={{ backgroundColor: '#fff', padding: '10px' }}
       />
       <Modal
-        open={ui.modal.open && ui.modal.name === 'ADD_SUBJECT'}
+        open={ui.modal.open && ui.modal.type === 'ADMIN'}
         title={false}
         onCancel={closeModal}
         style={{
