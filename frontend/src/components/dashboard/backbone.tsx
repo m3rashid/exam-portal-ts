@@ -21,7 +21,7 @@ import {
 import AllTeachers from 'components/admin/allTeachers';
 import Newtest from 'components/teacher/newtest/newtest';
 import queryString from 'query-string';
-import Conducttest from 'components/teacher/conducttest/conducttest';
+import Conducttest from 'components/teacher/conducttest';
 import ErrorPage from './error';
 import AllQuestions from 'components/teacher/allquestion';
 import AllSubjects from 'components/admin/allSubjects';

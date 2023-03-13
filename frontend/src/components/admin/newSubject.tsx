@@ -34,7 +34,7 @@ const NewSubjectForm: React.FC<INewSubject> = () => {
     } finally {
       setUi((prev) => ({
         ...prev,
-        modal: { data: null, open: false, name: 'NEW_SUBJECT' },
+        modal: { data: null, open: false, name: 'NEW_SUBJECT', type: 'ADMIN' },
       }));
     }
   };
